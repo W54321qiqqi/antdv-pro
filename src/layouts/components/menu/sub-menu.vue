@@ -1,17 +1,15 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { isFunction, isUrl } from '@v-c/utils'
-import type { VNodeChild } from 'vue'
 import AsyncIcon from './async-icon.vue'
 import type { MenuDataItem } from '~@/layouts/basic-layout/typing'
-withDefaults(defineProps<{ item: MenuDataItem; link?: boolean }>(), {
+const props = withDefaults(defineProps<{ item: MenuDataItem; link?: boolean }>(), {
   link: true,
 })
-const renderTitle = (title: VNodeChild | (() => VNodeChild)) => {
-  if (isFunction(title))
-    return title()
-
+const renderTitle = computed(() => {
+  const title = props.item.title
+  if (isFunction(title)) return title()
   return title
-}
+})
 </script>
 
 <template>
@@ -21,7 +19,7 @@ const renderTitle = (title: VNodeChild | (() => VNodeChild)) => {
         <AsyncIcon :icon="item.icon" />
       </template>
       <template #title>
-        {{ renderTitle(item.title) }}
+        {{ renderTitle }}
       </template>
       <template v-for="menu in item.children">
         <template v-if="!menu.hideInMenu">
@@ -35,15 +33,15 @@ const renderTitle = (title: VNodeChild | (() => VNodeChild)) => {
               </template>
               <template v-if="!isUrl(menu.path)">
                 <RouterLink v-if="link" :to="menu.path">
-                  {{ renderTitle(menu.title) }}
+                  {{ renderTitle }}
                 </RouterLink>
                 <template v-else>
-                  {{ renderTitle(menu.title) }}
+                  {{ renderTitle }}
                 </template>
               </template>
               <template v-else>
                 <a :href="menu.path" :target="menu.target ?? '_blank'">
-                  {{ renderTitle(menu.title) }}
+                  {{ renderTitle }}
                 </a>
               </template>
             </a-menu-item>
@@ -53,21 +51,21 @@ const renderTitle = (title: VNodeChild | (() => VNodeChild)) => {
     </a-sub-menu>
   </template>
   <template v-else>
-    <a-menu-item :key="item.path">
+    <a-menu-item :key="item.path" v-ripple>
       <template v-if="item.icon" #icon>
         <AsyncIcon :icon="item.icon" />
       </template>
       <template v-if="!isUrl(item.path)">
         <RouterLink v-if="link" :to="item.path">
-          {{ renderTitle(item.title) }}
+          {{ renderTitle }}
         </RouterLink>
         <template v-else>
-          {{ renderTitle(item.title) }}
+          {{ renderTitle }}
         </template>
       </template>
       <template v-else>
         <a :href="item.path" :target="item.target ?? '_blank'">
-          {{ renderTitle(item.title) }}
+          {{ renderTitle }}
         </a>
       </template>
     </a-menu-item>

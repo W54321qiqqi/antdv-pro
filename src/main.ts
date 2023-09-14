@@ -6,6 +6,7 @@ import { setupI18n } from './locales'
 import {
   setupAccessDirective,
   setupLoadingDirective,
+  setupRippleDirective,
 } from './directive'
 import router from '~/router'
 import '~/router/router-guard'
@@ -26,6 +27,9 @@ async function start() {
 function setupDirective(app: App) {
   // 注册loading自定义指令
   setupLoadingDirective(app)
+  // 注册access自定义指令
   setupAccessDirective(app)
+  // 注册ripple自定义指令
+  setupRippleDirective(app)
 }
 start()
